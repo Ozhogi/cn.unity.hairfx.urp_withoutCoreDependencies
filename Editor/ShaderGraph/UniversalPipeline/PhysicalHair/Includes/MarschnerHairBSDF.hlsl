@@ -356,8 +356,14 @@ half4 LightingHairFX(MarschnerHairSurfaceData hairSurfaceData, SurfaceData surfa
     uint pixelLightCount = GetAdditionalLightsCount();
     // We support directly Forward Plus for 2022.2, and skip support for the Clustered (experimental)
     #if USE_FORWARD_PLUS
+    #if UNITY_VERSION > 202220
+    for (uint lightIndex = 0; lightIndex < min(URP_FP_DIRECTIONAL_LIGHTS_COUNT, MAX_VISIBLE_LIGHTS); lightIndex++)
+    {
+        FORWARD_PLUS_SUBTRACTIVE_LIGHT_CHECK
+    #else
     for (uint lightIndex = 0; lightIndex < min(_AdditionalLightsDirectionalCount, MAX_VISIBLE_LIGHTS); lightIndex++)
     {
+    #endif
         Light light = GetAdditionalLight(lightIndex, inputData, shadowMask, aoFactor);
 
 #ifdef _LIGHT_LAYERS
